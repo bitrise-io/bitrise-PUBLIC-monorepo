@@ -3,9 +3,6 @@ name: iOS SwiftUI Analyze with Bitrise Build Cache
 # This workflow demonstrates Bitrise Build Cache integration with Xcode
 # and includes XCLogParser for build timing analysis.
 #
-# Purpose: Identify why builds aren't faster despite cache hits by showing
-# which tasks take the longest and whether they're being cached.
-#
 
 on:
   push:
