@@ -53,8 +53,6 @@ jobs:
       - name: Check Xcode Version
         run: xcodebuild -version
 
-      - name: Install XCLogParser
-        run: brew install xclogparser
 
       - name: Analyze
         working-directory: src/samples-ios-swift-swiftui
@@ -66,46 +64,9 @@ jobs:
           xcodebuild "analyze" \
             "-project" "samples-ios-swift-swiftui.xcodeproj" \
             "-scheme" "samples-ios-swift-swiftui" \
-            "-showBuildTimingSummary" \
-            "-resultBundlePath" "build-results/analyze-result.xcresult" \
             "CODE_SIGNING_ALLOWED=NO" \
             "COMPILER_INDEX_STORE_ENABLE=NO"
 
-      - name: Parse Build Timing with XCLogParser
-        if: always()
-        working-directory: src/samples-ios-swift-swiftui
-        run: |
-          # Parse to JSON format for analysis
-          xclogparser parse \
-            --xcodeproj samples-ios-swift-swiftui.xcodeproj \
-            --reporter json \
-            --output build-results/build-timing.json
-
-          # Parse to HTML format for visualization
-          xclogparser parse \
-            --xcodeproj samples-ios-swift-swiftui.xcodeproj \
-            --reporter html \
-            --output build-results/build-timing.html
-
-          # Parse to Chrome Tracer format for detailed timeline visualization
-          xclogparser parse \
-            --xcodeproj samples-ios-swift-swiftui.xcodeproj \
-            --reporter chromeTracer \
-            --output build-results/build-timing.json.gz
-
-          echo "✅ Build timing reports generated"
-
-      - name: Upload Build Timing Reports
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: build-timing-reports
-          path: |
-            src/samples-ios-swift-swiftui/build-results/build-timing.json
-            src/samples-ios-swift-swiftui/build-results/build-timing.html
-            src/samples-ios-swift-swiftui/build-results/build-timing.json.gz
-            src/samples-ios-swift-swiftui/build-results/analyze-result.xcresult
-          retention-days: 30
 
       - name: Attach Xcelerate logs
         if: always()
